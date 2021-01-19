@@ -1,92 +1,83 @@
-const axios = require('axios');
-const excelToJson = require('convert-excel-to-json');
-'use strict';
-var mongoDB =process.env.dburl;
-var UserGroup = require('../models/usrgroup');
-const slackToken =process.env.token;
-const url = 'https://slack.com/api/usergroups.create';
-const uri ="mongodb://localhost:27017/";
-let mongoose = require("mongoose");
-const { MongoClient } = require("mongodb");
-
-const client = new MongoClient(uri,{
+const axios = require("axios");
+const excelToJson = require("convert-excel-to-json");
+("use strict");
+const slackToken = process.env.token;
+var mongoose = require("mongoose");
+var mongoDB = process.env.dburl;
+mongoose.connect(mongoDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-  });
-
-
-//connecting to the database
-mongoose.connect(mongoDB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-
-exports.CreateUG = function(){
-//read excel file and convert it to json form
-const result = excelToJson({ 
-    sourceFile: __dirname + './../uploads/Data.xlsx',
-    header:{
-        rows: 1
-    },
-    columnToKey: {
-        A: 'firstName',
-        B: 'lastName',
-        C: 'email',
-        D: 'teamName',
-    }
 });
-console.log(result.sheet1);
-//remover repetition in teamName field and save it in an array
-arrUsrGroup = [];
-for (var j = 0; j < result.sheet1.length; j++) {
-    if(arrUsrGroup.indexOf(result.sheet1[j].teamName) == -1 ){
-        arrUsrGroup.push(result.sheet1[j].teamName);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+var UserGroup = require("../models/usrgroup");
+
+exports.CreateUG = async (file) => {
+    var message = "";
+    //read excel file and convert it to json form
+    const result = excelToJson({
+        sourceFile: file.path,
+        header: {
+            rows: 1,
+        },
+        columnToKey: {
+            A: "firstName",
+            B: "lastName",
+            C: "email",
+            D: "teamName",
+        },
+    });
+
+    //remover repetition in teamName field and save it in an array
+    let arrUsrGroup = [];
+    for (var j = 0; j < result.sheet1.length; j++) {
+        if (arrUsrGroup.indexOf(result.sheet1[j].teamName) == -1) {
+            arrUsrGroup.push(result.sheet1[j].teamName);
+        }
     }
-}
-//console.log(arrUG);
-var message="";
 
-run().catch(err => console.log(err));
+    let usrgroup = arrUsrGroup;
+    const collection = db.collection("UserGroup");
 
-async function run(usrgroup) {
-    usrgroup = arrUsrGroup;
-
-    await client.connect();
-    const database = client.db("gardeniadb");
-    const collection = database.collection("UserGroup");
-    
     for (var i = 0; i < usrgroup.length; i++) {
-        const query = { name: usrgroup[i]};
-        // search for usergroup name in db
-        const UG = await UserGroup.findOne(query);
-        // if usergroup name not exist the call API to create it
-        if(!UG){
-            const res = await axios.post(url, {
-            channel: 'general',
+        const query = {
             name: usrgroup[i]
-            }, { headers: { authorization: `Bearer ${slackToken}` } });
+        };
+        // search for usergroup name in db
+        let UG = await UserGroup.findOne(query);
 
-            //console.log('Done', res.data);
-            if(!res.data) return;
-            if(res.data.ok == false) return;
+        // if usergroup name not exist the call API to create it
+        if (!UG) {
+
+            let res = await axios.post(
+            process.env.slackcreateusergroupapi, {
+                    channel: "general",
+                    name: usrgroup[i],
+                }, {
+                    headers: {
+                        authorization: `Bearer ${slackToken}`
+                    }
+                }
+            );
+            if (!res.data) return;
+            if (res.data.ok == false) return;
             var userGroup = res.data.usergroup;
-            //console.log(userGroup.name + " is created");
 
             // add new usergroup to local db with status:active
-            await UserGroup.create({ name: userGroup.name , id: userGroup.id, status: "active" },(err,data)=>{
-                //console.log(userGroup.name + " this document is saved");
-                message+= userGroup.name + " this document is saved";
-                message+="  ";
-            });
-        }else{
-            message+= usrgroup[i] + " already exist";
-            message+="  ";
-    }
-    }
-    console.log(message);
-    //return message;  
-}
-arrUG = [];
-return ("after execution" + message );
-}
+            await UserGroup.create({
+                    name: userGroup.name,
+                    id: userGroup.id,
+                    status: "active"
+                },
+                (err, data) => {
+                    message += `${userGroup.name} is updated <br/>`;
 
+                }
+            );
+        } else {
+            message += `${usrgroup[i]} already exist <br/>`;
+        }
+    }
+    return message;
+};
