@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Welcome to Berytech</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
 
-  </head>
-  
-  <body>
-    <p style="color: red;"><%=message%></p>
-    <% include sampletable %>
+<head>
+  <title>Welcome to Berytech</title>
+  <%- include common.ejs %>
+</head>
+
+<body>
+  <div class="container">
     
+    <%- include menu.ejs %>
+    <p></p>
+    
+
+
     <form action="/" enctype="multipart/form-data" method="post">
       <input type="file" name="upload" multiple>
       <input type="submit" value="Upload">
-      
-    </form>
 
-  </body>
+    </form>
+    <p></p>
+    <p style="color: red;"><%- message%></p>
+  </div>
+</body>
+
 </html>
