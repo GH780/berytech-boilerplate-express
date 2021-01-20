@@ -71,7 +71,7 @@ exports.CreateUG = async (file) => {
                     status: "active"
                 },
                 (err, data) => {
-                    message += `${userGroup.name} is updated <br/>`;
+                    message += `${userGroup.name} is created <br/>`;
 
                 }
             );
