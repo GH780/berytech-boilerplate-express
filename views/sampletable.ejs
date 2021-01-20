@@ -1,121 +1,67 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-
-<!-- Write your comments here -->
-
-<link rel="stylesheet" type="text/css" href="excel-2007.css"/>
-
-<script lang="javascript">
-function ChangeTableClass(newClass)
-{
-	document.getElementById("TheTable").className = "ExcelTable" + newClass;
-}
-</script>
-
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<title>Table Excel-lookalike Sample</title>
+	<%- include common.ejs %>
+	<!-- Write your comments here -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/excel-2007.css" />
+	
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<title>Slack Data</title>
 </head>
 <body>
-this is a Sample of the excel file table format accepted<p>
-<!-- I try to get the format of an excel file -->
-Select look: 
-<select onchange='ChangeTableClass(this.options[this.selectedIndex].value);'>
-<option value="None">HTML Default</option>
-<option value="2007">Excel 2007</option>
-</select>
-
-</p>
-
-<table id="TheTable"
-border="1"
-class=""
->
-<tr><th class="heading">&nbsp;</th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
-<tr><td
-align="left"
-valign="bottom"
-class="heading"
->1</td
-><td
-align="left"
-valign="bottom"
-><b>first name</b></td
-><td
-align="right"
-valign="bottom"
-><b>last name</b></td
-><td
-align="right"
-valign="bottom"
-><b>email</b></td
-><td
-align="right"
-valign="bottom"
-><b>team-name</b></td
-></tr
-><tr
-><td class="heading">2</td
-><td
-align="left"
-valign="bottom"
-><b
->Rana</b
-></td
-><td
-align="right"
-valign="bottom"
-><b
->sawaya</b</td
-><td
-align="right"
-valign="bottom"
-><b
->RanaS@gmail.com</b</td
-><td
-align="right"
-valign="bottom"
-><b
->Team 1</b</td
-></tr
-><tr
-><td class="heading">3</td
-><td
-align="left"
-valign="bottom"
->Gardenia </td
-><td
-align="right"
-valign="bottom"
->Homsi</td
-><td
-align="right"
-valign="bottom"
->gardiniahomsi@gmail.com</td
-><td
-align="right"
-valign="bottom"
->Team 2</td
-></tr
-><tr
-><td class="heading">4</td
-><td
-align="left"
-valign="bottom"
->Sevag </td
-><td
-align="right"
-valign="bottom"
->Bakikian</td
-><td
-align="right"
-valign="bottom"
->SevagB@gmail.com</td
-><td
-align="right"
-valign="bottom"
->Team 3</td
-</tr>
-</table>
-
-</body></html>
+	<div class="container">
+	<%- include menu.ejs %>
+	<p></p>
+		<!-- I try to get the format of an excel file -->
+		
+<div class="lead text-muted">Slack User groups</div>
+	</p>
+	<script>
+$(document).ready(function() {
+    $('#TheTable').DataTable();
+} );
+	</script>
+	<table id="TheTable" class="table table-striped table-bordered" >
+		<thead>	<tr>
+			<th>&nbsp;</th>
+			<th>first name</th>
+			<th>last name</th>
+			<th>email</th>
+			<th>team-name</th>
+		</tr>
+	</thead>
+	<tbody>	<tr>
+			<td class="heading">2</td>
+			<td  valign="bottom"><b>Rana</b></td>
+			<td  valign="bottom"><b>sawaya</b</td>
+			<td  valign="bottom"><b>RanaS@gmail.com</b</td>
+			<td  valign="bottom"><b>Team 1</b</td>
+		</tr>
+		<tr>
+			<td class="heading">3</td>
+			<td align="left" valign="bottom">Gardenia </td>
+			<td  valign="bottom">Homsi</td>
+			<td  valign="bottom">gardiniahomsi@gmail.com</td>
+			<td  valign="bottom">Team 2</td>
+		</tr>
+		<tr>
+			<td class="heading">4</td>
+			<td align="left" valign="bottom">Sevag </td>
+			<td  valign="bottom">Bakikian</td>
+			<td  valign="bottom">SevagB@gmail.com</td>
+			<td  valign="bottom">Team 3</td> </tr></tbody>
+			<tfoot>
+				<tr>
+					<th>&nbsp;</th>
+			<th>first name</th>
+			<th>last name</th>
+			<th>email</th>
+			<th>team-name</th>
+				</tr>
+			</tfoot>
+			 </table> </body></div>
+				
+				
+				</html>
